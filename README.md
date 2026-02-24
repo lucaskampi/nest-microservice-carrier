@@ -100,3 +100,7 @@ GET http://localhost:4002/api/health
 
 - `carrier.schedule.created` - Schedule created event
 - `carrier.voucher.generated` - Voucher generated event
+
+---
+
+> This service was extracted from the monorepo `nest-microservice-store` as part of a microservices migration. Initial commits were done via multi-agent setup to avoid merge conflicts.
