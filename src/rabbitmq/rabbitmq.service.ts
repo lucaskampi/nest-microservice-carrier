@@ -1,11 +1,11 @@
 import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common'
-import * as amqp from 'amqplib'
+import { connect, Connection, Channel } from 'amqplib'
 
 @Injectable()
 export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(RabbitMQService.name)
-  private connection: amqp.Connection | null = null
-  private channel: amqp.Channel | null = null
+  private connection: Connection | null = null
+  private channel: Channel | null = null
   private readonly url: string
 
   constructor() {
@@ -22,9 +22,11 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
 
   private async connect() {
     try {
-      this.connection = await amqp.connect(this.url)
-      this.channel = await this.connection.createChannel()
-      await this.channel.assertExchange('purchase', 'topic', { durable: true })
+      this.connection = await connect(this.url) as unknown as Connection
+      this.channel = await (this.connection as any).createChannel()
+      if (this.channel) {
+        await this.channel.assertExchange('purchase', 'topic', { durable: true })
+      }
       this.logger.log('Connected to RabbitMQ')
     } catch (error) {
       this.logger.error('Failed to connect to RabbitMQ', error)
@@ -34,7 +36,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
   private async close() {
     try {
       if (this.channel) await this.channel.close()
-      if (this.connection) await this.connection.close()
+      if (this.connection) await (this.connection as any).close()
       this.logger.log('Disconnected from RabbitMQ')
     } catch (error) {
       this.logger.error('Error closing RabbitMQ connection', error)

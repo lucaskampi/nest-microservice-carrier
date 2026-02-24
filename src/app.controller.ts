@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { AppService } from './app.service'
+import { BookDeliveryDto } from './app.dto'
 
 @ApiTags('carrier')
 @Controller()
@@ -10,13 +11,11 @@ export class AppController {
   @Post('delivery')
   @ApiOperation({ summary: 'Book delivery with carrier' })
   @ApiResponse({ status: 201, description: 'Delivery booked successfully' })
-  async bookDelivery(@Body() deliveryInfo: {
-    orderId: number
-    deliveryDate: Date
-    originAddress: string
-    destinationAddress: string
-  }) {
-    return this.appService.bookDelivery(deliveryInfo)
+  async bookDelivery(@Body() deliveryInfo: BookDeliveryDto) {
+    return this.appService.bookDelivery({
+      ...deliveryInfo,
+      deliveryDate: new Date(deliveryInfo.deliveryDate),
+    })
   }
 
   @Get('delivery/:orderId')
