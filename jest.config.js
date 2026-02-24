@@ -16,4 +16,7 @@ module.exports = {
     '.*.controller.ts',
     'main.ts',
   ],
+  moduleNameMapper: {
+    '^@nest-microservices/shared$': '<rootDir>/../packages/shared/src',
+  },
 }
