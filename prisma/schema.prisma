@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Delivery {
+  id                Int       @id @default(autoincrement())
+  orderId           Int       @unique
+  purchaseId        Int?
+  voucherNumber     Int?
+  originAddress     String
+  destinationAddress String
+  status            String    @default("PENDING")
+  deliveryDate      DateTime?
+  deliveryForecast  DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
