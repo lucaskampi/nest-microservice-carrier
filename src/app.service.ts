@@ -43,6 +43,10 @@ export class AppService implements OnModuleInit {
 
       const result = await this.bookDelivery(deliveryInfo)
 
+      if (!result.number || !result.deliveryForecast) {
+        throw new Error('Failed to create delivery')
+      }
+
       const deliveryCompletedMessage: DeliveryCompletedMessage = {
         purchaseId: message.purchaseId,
         orderId: message.orderId,
